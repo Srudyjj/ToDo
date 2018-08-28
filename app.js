@@ -26,6 +26,8 @@
     `;
 
     taskList.innerHTML += task;
+    taskTitleInput.value = "";
+    taskBodyInput.value = "";
 
     e.preventDefault();
   });   
