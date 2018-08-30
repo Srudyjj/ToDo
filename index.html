@@ -25,6 +25,12 @@
           line-height: 60px; /* Vertically center the text there */
           background-color: #f5f5f5;
         }
+        i {
+          pointer-events: none;
+        }
+        .warning {
+          background-color: rgba(231, 75, 75, 0.452);
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
@@ -45,31 +51,11 @@
         <label for="taskText">Task Description</label>
         <input type="text" class="form-control" id="taskText" placeholder="Input Task Description">
       </div>
-      <button type="button" class="btn btn-success"><i class="fas fa-plus-square"></i> Add</button>
+      <button id="addBtn" type="button" class="btn btn-success"><i class="fas fa-plus-square"></i> Add</button>
     </form>
-    <div class="taskList col-xs-12 mt-5 pt-2 pb-5">
-      <div class="row">
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 pt-2 pb-4">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Special title treatment</h5>
-              <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-              <div class="btn-group" role="group" aria-label="Button group">
-                <div class="btn-group" role="group">
-                  <button id="taskStatus" type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Status
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="taskStatus">
-                    <a class="dropdown-item" href="#">Done</a>
-                    <a class="dropdown-item" href="#">On Process</a>
-                  </div>
-                </div>
-                <button type="button" class="btn btn btn-outline-warning">Edit</button>
-                <button type="button" class="btn btn btn-outline-danger">Delete</button>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div class="col-xs-12 mt-5 pt-2 pb-5">
+      <div class="row"id="taskList" >
+        
       </div>
     </div>
   </div>

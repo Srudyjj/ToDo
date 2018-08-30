@@ -2,42 +2,93 @@
 //     console.log("All resources finished loading!");
 // });
 
-(function() {
-  const taskTitleInput = document.getElementById('task_title');
-  const taskBodyInput = document.getElementById("task_body");
-  const taskList = document.getElementById("taskList");
-  const addBtn = document.getElementById('addBtn');
+const toDo = (function() {
 
-  addBtn.addEventListener('click', (e) => {
-    const taskTitleText = taskTitleInput.value
-    const taskBodyText = taskBodyInput.value;
+  const UIElements = {
+    taskName: document.getElementById('taskTitle'),
+    taskText: document.getElementById('taskText'),
+    addBtn: document.getElementById('addBtn'),
+    taskList: document.getElementById('taskList')
+  }
 
-    let task = `
-      <div class="card col-md-4">
-        <div class="card-body">
-          <h5 class="card-title">${taskTitleText}</h5>
-          <p class="card-text">${taskBodyText}</p>
-          <button type="button" class="btn btn-outline-success"> <i class="far fa-check-square"></i> Check</button>
-          <button type="button" class="deleteBtn btn btn-outline-danger float-right ml-2 "> <i class="far fa-trash-alt" style="pointer-events: none;"></i></button>
-          <button type="button" class="btn btn-outline-warning float-right"><i class="far fa-edit"></i></button>
-        </div>
-      </div>
-    `;
+  const clearFields = function() {
+    UIElements.taskName.value = '';
+    UIElements.taskText.value = '';
+  }
 
-    taskList.innerHTML += task;
-    taskTitleInput.value = "";
-    taskBodyInput.value = "";
+  const warning = function(elem) {
+    elem.classList.add("warning");
+    setTimeout(() => {
+      elem.classList.remove("warning")
+    }, 2000);
+  }
 
-    e.preventDefault();
-  });
-  
-  taskList.addEventListener('click' , (e) => {
-    if (e.target.classList.contains("deleteBtn")) {
-      e.target.parentElement.parentElement.remove();
+  return {
+    add: function() {
+      if (UIElements.taskName.value !== "") {
+        const task = `
+          <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 pt-2 pb-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">${UIElements.taskName.value}</h5>
+                <p class="card-text">${UIElements.taskText.value}</p>
+                <div class="btn-group" role="group" aria-label="Button group">
+                  <div class="btn-group" role="group">
+                    <button id="taskStatus" type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Status
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="taskStatus">
+                      <a class="dropdown-item" status="done" href="#">Done</a>
+                      <a class="dropdown-item" status="onProcess" href="#">On Process</a>
+                    </div>
+                  </div>
+                  <button type="button" class="edit btn btn btn-outline-warning">Edit</button>
+                  <button type="button" class="delete btn btn btn-outline-danger">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      UIElements.taskList.innerHTML += task;
+      clearFields();
+      } else {
+        warning(UIElements.taskName);
+      }
+    },
+
+    delete: function(e) {
+      if (e.target.classList.contains("delete")) {
+        parent(e.target);
+
+        function parent(elem) {        
+          if(elem.classList.contains("card")) {
+            return elem.parentElement.remove();
+          }
+          parent(elem.parentElement); 
+        }
+      }
+    },
+
+    edit: function() {
+      console.log("edit");
+      
+    },
+
+    status: function() {
+      console.log("status");
+    },
+
+    getUI : function() {
+      return UIElements
     }
-  })
-} 
+  }
+})()
 
-)();
+toDo.getUI().addBtn.addEventListener('click', toDo.add);
+toDo.getUI().taskList.addEventListener('click', toDo.delete);
+
+
+
+
 
 
