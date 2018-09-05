@@ -17,10 +17,9 @@ class DataStorage {
   }
 
   remove(task) {
-    console.log(task.name);
-    console.log(this._data);
-    
-    
+    const newList = this._data.filter(item => item.name !== task.name);
+    this._data = newList;
+    localStorage.setItem(this.privateKey, JSON.stringify(this._data));     
   }
 }
 
