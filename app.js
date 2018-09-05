@@ -1,3 +1,29 @@
+class DataStorage {
+  constructor(){
+   if(! DataStorage.instance) {
+    DataStorage.instance = this;
+    this.privateKey = "__taskList__"
+    this._data = localStorage.getItem(this.privateKey) || [];   
+   }
+   return DataStorage.instance;
+  }
+
+  add(task) {
+    const taskItem = {}
+    taskItem.name = task.name;
+    taskItem.desc = task.desc;
+    this._data.push(taskItem);
+    localStorage.setItem(this.privateKey, JSON.stringify(this._data));
+  }
+
+  remove(task) {
+    console.log(task.name);
+    console.log(this._data);
+    
+    
+  }
+}
+
 class Form {
   constructor(mediator) {
     this.mediator = mediator;
@@ -67,20 +93,17 @@ class Task {
 class Mediator {
   constructor() {
     this.task_list = document.getElementById("taskList");
-    this.addToDom = this.addToDom.bind(this);   
-  }
-
-  addToDom(HTMLelement) {
-    this.task_list.appendChild(HTMLelement);
+    this.dataStorage = new DataStorage(); 
   }
 
   notify(sender, message) {
     if (sender instanceof Form && message === "add" ) {  
       const task = new Task(this, sender);
-      const HtmlElement = task.createElement();
-      this.addToDom(HtmlElement);
+      this.task_list.appendChild(task.createElement());
+      this.dataStorage.add(task);
     } else if (sender instanceof Task && message === "remove" ) {  
       sender.taskElement.remove();
+      this.dataStorage.remove(sender);
     }
   }
 }
