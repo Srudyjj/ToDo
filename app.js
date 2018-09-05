@@ -16,6 +16,10 @@ class DataStorage {
     localStorage.setItem(this.privateKey, JSON.stringify(this._data));
   }
 
+  update(task) {
+    
+  }
+
   remove(task) {
     const newList = this._data.filter(item => item.name !== task.name);
     this._data = newList;
@@ -28,7 +32,7 @@ class Form {
     this.mediator = mediator;
     this.taskName = document.getElementById("taskTitle");
     this.taskDesc = document.getElementById("taskText");
-    // this.taskStatus
+    this.taskStatus = document.getElementById("status");
     this.addBtn = document.getElementById("addBtn");
     this.add = this.add.bind(this);
     this.addListeners = this.addListeners.bind(this);
@@ -58,10 +62,10 @@ class Task {
     this.mediator = mediator;
     this.name = sender.taskName.value;
     this.desc = sender.taskDesc.value;
-    // this.status = status;
+    this.status = sender.taskStatus.value;
     this.createElement = this.createElement.bind(this);
     this.removeElement = this.removeElement.bind(this);
-    this.taskElement;
+    this.setStatus = this.setStatus.bind(this);   
   }
 
   createElement() {
@@ -75,6 +79,24 @@ class Task {
     card.appendChild(cardBody);
     cardBody.innerHTML = `<h5 class="card-title">${this.name}</h5>
     <p class="card-text">${this.desc}</p>`;
+
+    const form = document.createElement("form");
+    const formGroup = document.createElement("div");
+    formGroup.classList.add("form-group");
+    const label = document.createElement("label");
+    label.setAttribute("for", `${this.name}_status`);
+    label.innerText = "Status";
+    const select = document.createElement("select");
+    select.classList.add("form-control");
+    select.id = `${this.name}_status`;
+    select.innerHTML = "<option>ToDo</option><option>Going</option><option>Done</option>  <option>Reject</option>";
+    select.addEventListener("change", () => {this.setStatus(select.value)});
+
+    formGroup.appendChild(label);
+    formGroup.appendChild(select);
+    form.appendChild(formGroup);
+    cardBody.insertBefore(form, cardBody.firstChild);
+
     const deleteBtn = document.createElement("button");
     deleteBtn.setAttribute("type", "button");
     deleteBtn.classList.add("delete", "btn", "btn-outline-danger");
@@ -82,6 +104,11 @@ class Task {
     cardBody.appendChild(deleteBtn);
     deleteBtn.addEventListener("click", (e) => this.removeElement());
     return (this.taskElement);
+  }
+
+  setStatus(status) {
+    this.status = status;
+    this.mediator.notify(this, "update");
   }
 
   removeElement() {
@@ -96,13 +123,15 @@ class Mediator {
   }
 
   notify(sender, message) {
-    if (sender instanceof Form && message === "add" ) {  
+    if (sender instanceof Form && message === "add") {  
       const task = new Task(this, sender);
       this.task_list.appendChild(task.createElement());
       this.dataStorage.add(task);
-    } else if (sender instanceof Task && message === "remove" ) {  
+    } else if (sender instanceof Task && message === "remove") {  
       sender.taskElement.remove();
       this.dataStorage.remove(sender);
+    } else if (sender instanceof Task && message === "update") {  
+      this.dataStorage.update(sender);
     }
   }
 }
