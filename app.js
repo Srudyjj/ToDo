@@ -3,7 +3,7 @@ class DataStorage {
    if(! DataStorage.instance) {
     DataStorage.instance = this;
     this.privateKey = "__taskList__"
-    this._data = localStorage.getItem(this.privateKey) || [];   
+    this._data = JSON.parse(localStorage.getItem(this.privateKey)) || [];   
    }
    return DataStorage.instance;
   }
@@ -12,12 +12,22 @@ class DataStorage {
     const taskItem = {}
     taskItem.name = task.name;
     taskItem.desc = task.desc;
+    taskItem.status = task.status;
     this._data.push(taskItem);
     localStorage.setItem(this.privateKey, JSON.stringify(this._data));
   }
 
   update(task) {
-    
+    const newList = this._data.map(item => {
+      if (item.name === task.name) {
+        item.status = task.status;
+        return item;
+      } else {
+        return item;
+      }
+    });
+    this._data = newList;
+    localStorage.setItem(this.privateKey, JSON.stringify(this._data));    
   }
 
   remove(task) {
@@ -45,6 +55,7 @@ class Form {
         this.add();
         this.taskName.value = "";
         this.taskDesc.value = "";
+        this.taskStatus.value = "ToDo";
       }
       else {
         alert("Fill the Task Name field")
@@ -90,6 +101,7 @@ class Task {
     select.classList.add("form-control");
     select.id = `${this.name}_status`;
     select.innerHTML = "<option>ToDo</option><option>Going</option><option>Done</option>  <option>Reject</option>";
+    select.value = this.status;
     select.addEventListener("change", () => {this.setStatus(select.value)});
 
     formGroup.appendChild(label);
